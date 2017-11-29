@@ -33,7 +33,7 @@ class StanfordPOSTagger(StanfordCoreNLP):
         self.__buildcmd()
 
     def __buildcmd(self):
-        self.cmdline = 'java -cp "' + self.root + '*' + '" ' + self.classfier + \
+        self.cmdline = 'java -cp "' + self.root + '*" ' + self.classfier + \
             ' -model "' + self.modelPath + '" -tagSeparator ' + self.delimiter
         print(self.cmdline)
 

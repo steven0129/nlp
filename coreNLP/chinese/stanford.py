@@ -46,3 +46,27 @@ class StanfordPOSTagger(StanfordCoreNLP):
 
     def tagFile(self, inputPath, outPath):
         os.system(self.cmdline + ' -textFile ' + inputPath + ' > ' + outPath)
+
+
+class StanfordParser(StanfordCoreNLP):
+    def __init__(self, modelPath, jarPath, optType):
+        StanfordCoreNLP.__init__(self, jarPath)
+        self.modelPath = modelPath
+        self.classifier = 'edu.stanford.nlp.parser.lexparser.LexicalizedParser'
+        self.optType = optType
+        self.__buildcmd()
+
+    def __buildcmd(self):
+        self.cmdline = 'java -mx500m -cp "' + self.root + '*" ' + self.classifier + \
+            ' -outputFormat "' + self.optType + '" ' + self.modelPath + ' '
+
+    def parse(self, sent):
+        self.saveFile(self.tempSrcPath, sent)
+        tagtxt = os.popen(self.cmdline + self.tempSrcPath, 'r').read()
+        self.delFile(self.tempSrcPath)
+        return tagtxt
+
+    def tagFile(self, sent, outPath):
+        self.saveFile(self.tempSrcPath, sent)
+        os.system(self.cmdline + self.tempSrcPath + ' > ' + outPath)
+        self.delFile(self.tempSrcPath)
